@@ -42,10 +42,10 @@ router.put('/:id', authenticateUser, asyncHandler( async (req, res) => {
                 await course.update(req.body);
                 res.status(204).end();
             } else {
-                res.status(400).json({"Message": "Please provide values for \"title\" and \"description\""});
+                res.status(400).json({"message": "Please provide values for \"title\" and \"description\""});
             }
         } else {
-            res.status(403).json({ "Message": "The user do not have access to the course" });
+            res.status(403).json({ "forbidden": "The user do not have access to the course" });
         }
     } else {
         throw new Error(`The course with id: ${id} does not exist!`);

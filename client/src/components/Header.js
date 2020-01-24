@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom';
 
 export default ({context}) => {
     const authUser = context.authenticatedUser;
+
     return (
     <div className="header">
         <div className="bounds">
-            <h1 className="header--logo">Courses</h1>
+            <Link to="/">
+                <h1 className="header--logo">Courses</h1>
+            </Link>
             {authUser ? (
                 <nav><span>Welcome {`${authUser.firstName} ${authUser.lastName}`}!</span><Link className="signout" to="/signout">Sign Out</Link></nav>
             ) : (

@@ -57,6 +57,8 @@ export default class CreateCourse extends Component {
         errors
       } = this.state;
 
+      const authUser = this.props.context.authenticatedUser;
+
         return(
             <div className="bounds course--detail">
             <h1>Create Course</h1>
@@ -68,7 +70,7 @@ export default class CreateCourse extends Component {
                     <h4 className="course--label">Course</h4>
                     <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..."
                         value={title || ""} onChange={this.change} /></div>
-                    <p>By Joe Smith</p>
+                    <p>By {`${authUser.firstName} ${authUser.lastName}`}</p>
                   </div>
                   <div className="course--description">
                     <div><textarea id="description" name="description" className="" placeholder="Course description..." value={description || ""} onChange={this.change}></textarea></div>

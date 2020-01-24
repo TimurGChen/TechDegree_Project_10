@@ -34,7 +34,7 @@ export default class CourseData {
         if (response.status === 204) {
             return null;
         } else if (response.status === 400 || response.status === 403) {
-            return response.json().then(data => data.Message);
+            return response.json().then(data => data);
         } else {
             throw new Error();
         }

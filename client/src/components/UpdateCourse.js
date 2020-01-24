@@ -8,6 +8,7 @@ export default class UpdateCourse extends Component {
         description: '',
         estimatedTime: '',
         materialsNeeded: '',
+        owner: {},
         errors: []
     }
 
@@ -15,12 +16,17 @@ export default class UpdateCourse extends Component {
         const courseId = this.props.match.params.id;
         this.props.context.courseData.getCourse(courseId)
             .then(courseDetail => {
-                this.setState(prevState => ({
-                    title: courseDetail.title,
-                    description: courseDetail.description,
-                    estimatedTime: courseDetail.estimatedTime || '',
-                    materialsNeeded: courseDetail.materialsNeeded || ''
-                }));
+                if (courseDetail === null) {
+                    this.props.history.push('/not-found');
+                } else {
+                    this.setState(prevState => ({
+                        title: courseDetail.title,
+                        description: courseDetail.description,
+                        estimatedTime: courseDetail.estimatedTime || '',
+                        materialsNeeded: courseDetail.materialsNeeded || '',
+                        owner: courseDetail.owner
+                    }));
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -36,12 +42,15 @@ export default class UpdateCourse extends Component {
         const courseId = this.props.match.params.id;
         const updatedCourse = {title, userId: authUser.id, description, estimatedTime, materialsNeeded};
         context.courseData.updateCourse(courseId, updatedCourse, authUser.emailAddress, authUser.mima)
-            .then(message => {
-                if (message === null) {
+            .then(data => {
+                if (data === null) {
                     this.props.history.push('/');
                 } else {
-                    console.log(message);
-                    this.props.history.push('/forbidden');
+                    if (data.message) {
+                        this.setState(prevState => ({errors: [data.message]}));
+                    } else {
+                        this.props.history.push('/forbidden');
+                    }
                 }
             })
             .catch(err => {
@@ -66,7 +75,8 @@ export default class UpdateCourse extends Component {
             description,
             estimatedTime,
             materialsNeeded,
-            errors
+            errors,
+            owner
         } = this.state;
 
         return(
@@ -80,7 +90,7 @@ export default class UpdateCourse extends Component {
                                 <Errors errors={errors} />
                                 <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..."
                                     value={title} onChange={this.change} /></div>
-                                <p>By Joe Smith</p>
+                                <p>By {`${owner.firstName} ${owner.lastName}`}</p>
                             </div>
                             <div className="course--description">
                                 <div>
