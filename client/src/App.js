@@ -28,9 +28,6 @@ const UpdateCourseWithContext = withContext(UpdateCourse);
 const UserSignInWithContext = withContext(UserSignIn);
 const UserSignOutWithContext = withContext(UserSignOut);
 const UserSignUpWithContext = withContext(UserSignUp);
-const ForbiddenWithContext = withContext(Forbidden);
-const UnhandledErrorWithContext = withContext(UnhandledError);
-const NotFoundWithContext = withContext(NotFound);
 
 
 
@@ -48,9 +45,9 @@ function App() {
           <Route exact path='/signin' component={UserSignInWithContext} />
           <Route exact path='/signup' component={UserSignUpWithContext} />
           <Route exact path='/signout' component={UserSignOutWithContext} />
-          <Route path='/forbidden' component={ForbiddenWithContext} />
-          <Route path='/error' component={UnhandledErrorWithContext} />
-          <Route component={NotFoundWithContext} />
+          <Route path='/forbidden' component={Forbidden} />
+          <Route path='/error' component={UnhandledError} />
+          <Route component={NotFound} />
         </Switch>
       </div>
     </Router>

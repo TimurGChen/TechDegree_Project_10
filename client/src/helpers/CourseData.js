@@ -4,6 +4,7 @@ import Cryptr from 'cryptr';
 export default class CourseData {
 
     constructor() {
+        // decrypt encoded password ("mima")
         this.cryptr = new Cryptr("UnCrackable");
     }
 

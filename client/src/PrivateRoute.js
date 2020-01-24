@@ -12,7 +12,7 @@ export default ({ component: Component, ...rest }) => (
                     :
                     <Redirect to={{
                         pathname: '/signin',
-                        state: { from: props.location }
+                        state: { from: props.location } // allows sign-in page to redirect back
                     }} />
                 }
             />

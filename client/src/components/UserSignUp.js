@@ -27,6 +27,7 @@ export default class UserSignUp extends Component {
             context.userData.createUser(newUser)
                 .then(errors => {
                     if (errors.length) {
+                        // displays validation errors
                         this.setState({errors});
                     } else {
                         context.actions.signIn(emailAddress, password)

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-// import CourseData from '../helpers/CourseData';
-// const data = new CourseData();
 
 export default class Courses extends Component {
 
@@ -15,7 +13,10 @@ export default class Courses extends Component {
             .then(courseData => {
                 this.setState(prevState => ({ courses: courseData }));
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error(err);
+                this.props.history.push('/error');
+            });
     }
 
     render() {

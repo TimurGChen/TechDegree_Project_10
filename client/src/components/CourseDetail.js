@@ -9,6 +9,7 @@ export default class CourseDetail extends Component {
         owner: {}
     }
 
+    // fetch course detail from the rest api
     componentDidMount = () => {
         const context = this.props.context;
         const courseId = this.props.match.params.id;
@@ -39,6 +40,7 @@ export default class CourseDetail extends Component {
                 if (err === null) {
                     this.props.history.push('/');
                 } else {
+                    // if user's credential doesn't match 
                     console.log(err);
                     this.props.history.push('/forbidden');
                 }

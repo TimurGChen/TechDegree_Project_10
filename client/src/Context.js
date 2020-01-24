@@ -10,28 +10,28 @@ export class Provider extends Component {
 
     state = {
         authenticatedUser: Cookies.getJSON('authenticatedUser') || null,
-        error: null
     };
 
     constructor() {
         super();
         this.courseData = new CourseData();
         this.userData = new UserData();
+        // encrypt password as "mima"
         this.cryptr = new Cryptr("UnCrackable");
     }
 
     signIn = async (emailAddress, password) => {
         const user = await this.userData.getUser(emailAddress, password);
         if (user !== null) {
-            user["mima"] = this.cryptr.encrypt(password);
+            user["mima"] = this.cryptr.encrypt(password); // useful in future authentication
             this.setState(prevState => ({authenticatedUser: user}));
-            Cookies.set('authenticatedUser', JSON.stringify(user), {expires: 1});
+            Cookies.set('authenticatedUser', JSON.stringify(user), {expires: 1}); // store credentials in cookies
         }
         return user;
     }
 
     signOut = () => {
-        Cookies.remove('authenticatedUser');
+        Cookies.remove('authenticatedUser'); // remove credentials in cookies
         this.setState(prevState => ({ authenticatedUser: null }));
     }
 

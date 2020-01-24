@@ -19,6 +19,7 @@ export default class UserSignIn extends Component {
                 if (user === null) {
                     this.setState(prevState => ({errors: ["Invalid email or password"]}));
                 } else {
+                    // return to the page before redirecting to sign-in
                     this.props.history.push(from);
                 }
             })

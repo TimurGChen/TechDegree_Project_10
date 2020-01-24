@@ -27,6 +27,7 @@ export default class CreateCourse extends Component {
       context.courseData.createCourse(newCourse, authUser.emailAddress, authUser.mima )
         .then(errors => {
           if (errors.length) {
+            // display validation errors
             this.setState(prevState => ({ errors }));
           } else {
             this.props.history.push('/');

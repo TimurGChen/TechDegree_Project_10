@@ -47,8 +47,10 @@ export default class UpdateCourse extends Component {
                     this.props.history.push('/');
                 } else {
                     if (data.message) {
+                        // display validation errors
                         this.setState(prevState => ({errors: [data.message]}));
                     } else {
+                        // user's id doesn't match course owner's id
                         this.props.history.push('/forbidden');
                     }
                 }
