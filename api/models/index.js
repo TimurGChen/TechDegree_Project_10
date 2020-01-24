@@ -14,4 +14,7 @@ const db = {
 db.models.User = require('./user')(sequelize);
 db.models.Course = require('./course')(sequelize);
 
+db.models.User.hasMany(db.models.Course, {as: 'owner', foreignKey: 'userId'});
+db.models.Course.belongsTo(db.models.User, {as: 'owner', foreignKey: 'UserId'});
+
 module.exports = db;

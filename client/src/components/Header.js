@@ -1,12 +1,18 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-export default () => (
-    <div class="header">
-        <div class="bounds">
-            <h1 class="header--logo">Courses</h1>
-            <nav><span>Welcome Joe Smith!</span><a class="signout" href="index.html">Sign Out</a></nav>
-            {/** or */}
-            <nav><a class="signup" href="sign-up.html">Sign Up</a><a class="signin" href="sign-in.html">Sign In</a></nav>
+export default ({context}) => {
+    const authUser = context.authenticatedUser;
+    return (
+    <div className="header">
+        <div className="bounds">
+            <h1 className="header--logo">Courses</h1>
+            {authUser ? (
+                <nav><span>Welcome {`${authUser.firstName} ${authUser.lastName}`}!</span><Link className="signout" to="/signout">Sign Out</Link></nav>
+            ) : (
+                <nav><Link className="signup" to="/signup">Sign Up</Link><Link className="signin" to="/signin">Sign In</Link></nav>
+            )}
         </div>
     </div>
-);
+    );
+};

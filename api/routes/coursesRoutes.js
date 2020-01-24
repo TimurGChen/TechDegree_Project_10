@@ -1,21 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const { models } = require('../models');
-const { Course } = models;
+const { Course, User } = models;
 const { asyncHandler, authenticateUser } = require('./helpers');
 
 // GET all courses
 router.get('/', asyncHandler( async(req, res) => {
     const allCourses = await Course.findAll({
-        attributes: ['id', 'userId', 'title', 'description', 'estimatedTime', 'materialsNeeded']
-    });
+        attributes: ['id', 'userId', 'title', 'description', 'estimatedTime', 'materialsNeeded'],
+    })
     res.status(200).json(allCourses);
 }));
 
 // GET the course with id
 router.get('/:id', asyncHandler( async (req, res) => {
     const course = await Course.findByPk(req.params.id, {
-        attributes: ['id', 'userId', 'title', 'description', 'estimatedTime', 'materialsNeeded']
+        attributes: ['id', 'userId', 'title', 'description', 'estimatedTime', 'materialsNeeded'],
+        include: {
+            model: User, 
+            as: 'owner', 
+            attributes: ['firstName', 'lastName']
+        }
     });
     res.status(200).json(course);
 }));

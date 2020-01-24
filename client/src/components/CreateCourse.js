@@ -1,57 +1,95 @@
-import React, { Component } from React;
+import React, { Component } from 'react';
+import Errors from './Errors';
 
 export default class CreateCourse extends Component {
 
     state = {
-
+      title: null,
+      description: null,
+      estimatedTime: null,
+      materialsNeeded: null,
+      errors: []
     }
 
-    handleSubmit() {
-        
+    submit = (e) => {
+      e.preventDefault();
+      const {
+        title, 
+        description, 
+        estimatedTime, 
+        materialsNeeded 
+      } = this.state;
+      const { context } = this.props;
+      const authUser = context.authenticatedUser;
+      const userId = authUser.id;
+      const newCourse = {title, userId, description, estimatedTime, materialsNeeded};
+
+      context.courseData.createCourse(newCourse, authUser.emailAddress, authUser.mima )
+        .then(errors => {
+          if (errors.length) {
+            this.setState(prevState => ({ errors }));
+          } else {
+            this.props.history.push('/');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          this.props.history.push('/error');
+        });
+    }
+
+    change = e => {
+      const name = e.target.name;
+      const value = e.target.value;
+      this.setState(prevState => ({[name]: value}));
+    }
+
+    cancel = () => {
+      this.props.history.push('/');
     }
 
     render() {
+      const {
+        title,
+        description,
+        estimatedTime,
+        materialsNeeded,
+        errors
+      } = this.state;
+
         return(
-            <div class="bounds course--detail">
+            <div className="bounds course--detail">
             <h1>Create Course</h1>
             <div>
-              <div>
-                <h2 class="validation--errors--label">Validation errors</h2>
-                <div class="validation-errors">
-                  <ul>
-                    <li>Please provide a value for "Title"</li>
-                    <li>Please provide a value for "Description"</li>
-                  </ul>
-                </div>
-              </div>
-              <form>
-                <div class="grid-66">
-                  <div class="course--header">
-                    <h4 class="course--label">Course</h4>
-                    <div><input id="title" name="title" type="text" class="input-title course--title--input" placeholder="Course title..."
-                        value="" /></div>
+              <Errors errors={errors} />
+              <form onSubmit={this.submit}>
+                <div className="grid-66">
+                  <div className="course--header">
+                    <h4 className="course--label">Course</h4>
+                    <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..."
+                        value={title || ""} onChange={this.change} /></div>
                     <p>By Joe Smith</p>
                   </div>
-                  <div class="course--description">
-                    <div><textarea id="description" name="description" class="" placeholder="Course description..."></textarea></div>
+                  <div className="course--description">
+                    <div><textarea id="description" name="description" className="" placeholder="Course description..." value={description || ""} onChange={this.change}></textarea></div>
                   </div>
                 </div>
-                <div class="grid-25 grid-right">
-                  <div class="course--stats">
-                    <ul class="course--stats--list">
-                      <li class="course--stats--list--item">
+                <div className="grid-25 grid-right">
+                  <div className="course--stats">
+                    <ul className="course--stats--list">
+                      <li className="course--stats--list--item">
                         <h4>Estimated Time</h4>
-                        <div><input id="estimatedTime" name="estimatedTime" type="text" class="course--time--input"
-                            placeholder="Hours" value="" /></div>
+                        <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input"
+                            placeholder="Hours" value={estimatedTime || ""} onChange={this.change} /></div>
                       </li>
-                      <li class="course--stats--list--item">
+                      <li className="course--stats--list--item">
                         <h4>Materials Needed</h4>
-                        <div><textarea id="materialsNeeded" name="materialsNeeded" class="" placeholder="List materials..."></textarea></div>
+                        <div><textarea id="materialsNeeded" name="materialsNeeded" className="" placeholder="List materials..." value={materialsNeeded || ""} onChange={this.change}></textarea></div>
                       </li>
                     </ul>
                   </div>
                 </div>
-                <div class="grid-100 pad-bottom"><button class="button" type="submit">Create Course</button><button class="button button-secondary" onclick="event.preventDefault(); location.href='index.html';">Cancel</button></div>
+                <div className="grid-100 pad-bottom"><button className="button" type="submit">Create Course</button><button className="button button-secondary" onClick={ this.cancel }>Cancel</button></div>
               </form>
             </div>
           </div>
