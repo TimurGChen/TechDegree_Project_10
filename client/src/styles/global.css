@@ -751,3 +751,11 @@ input:focus {
 .course--description textarea {
   margin-bottom: 20px;
 }
+
+.errorMeme {
+  display: block;
+  max-width: 1000px;
+  max-height: 618px;
+  width: auto;
+  height: auto;
+}
