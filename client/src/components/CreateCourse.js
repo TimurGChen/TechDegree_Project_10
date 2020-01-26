@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Errors from './Errors';
+import Processing from './Processing';
 
 export default class CreateCourse extends Component {
 
@@ -8,9 +9,11 @@ export default class CreateCourse extends Component {
       description: null,
       estimatedTime: null,
       materialsNeeded: null,
-      errors: []
+      errors: [],
+      isProcessing: false
     }
 
+    // create a new user in the database
     submit = (e) => {
       e.preventDefault();
       const {
@@ -24,11 +27,17 @@ export default class CreateCourse extends Component {
       const userId = authUser.id;
       const newCourse = {title, userId, description, estimatedTime, materialsNeeded};
 
-      context.courseData.createCourse(newCourse, authUser.emailAddress, authUser.mima )
+      this.setState(prevState => ({isProcessing: true}));
+      // timeout allows processing message to render
+      setTimeout(() => {
+        context.courseData.createCourse(newCourse, authUser.emailAddress, authUser.mima )
         .then(errors => {
           if (errors.length) {
             // display validation errors
-            this.setState(prevState => ({ errors }));
+            this.setState(prevState => ({ 
+              errors,
+              isProcessing: false 
+            }));
           } else {
             this.props.history.push('/');
           }
@@ -37,8 +46,10 @@ export default class CreateCourse extends Component {
           console.error(err);
           this.props.history.push('/error');
         });
+      }, 100);
     }
 
+    // update state according to the input
     change = e => {
       const name = e.target.name;
       const value = e.target.value;
@@ -55,7 +66,8 @@ export default class CreateCourse extends Component {
         description,
         estimatedTime,
         materialsNeeded,
-        errors
+        errors,
+        isProcessing
       } = this.state;
 
       const authUser = this.props.context.authenticatedUser;
@@ -92,7 +104,14 @@ export default class CreateCourse extends Component {
                     </ul>
                   </div>
                 </div>
-                <div className="grid-100 pad-bottom"><button className="button" type="submit">Create Course</button><button className="button button-secondary" onClick={ this.cancel }>Cancel</button></div>
+                {isProcessing ?
+                  <Processing />
+                  :
+                  <div className="grid-100 pad-bottom">
+                    <button className="button" type="submit">Create Course</button>
+                    <button className="button button-secondary" onClick={ this.cancel }>Cancel</button>
+                  </div>
+                }
               </form>
             </div>
           </div>

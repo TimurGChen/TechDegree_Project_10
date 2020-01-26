@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * renders the home page at route '/'
+ */
 export default class Courses extends Component {
 
     state = {
         courses: []
     }
 
+    // retrieves the list of all courses from database
     componentDidMount = () => {
         const {context} = this.props;
         context.courseData.getCourse()

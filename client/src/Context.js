@@ -9,6 +9,7 @@ const Context = React.createContext();
 export class Provider extends Component {
 
     state = {
+        // using the credentials provided in cookies by default
         authenticatedUser: Cookies.getJSON('authenticatedUser') || null,
     };
 

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
 import Errors from './Errors';
+import Processing from './Processing';
 
 export default class UserSignUp extends Component {
 
@@ -10,9 +11,11 @@ export default class UserSignUp extends Component {
         emailAddress: "",
         password: "",
         confirmPassword: "",
-        errors: []
+        errors: [],
+        isProcessing: false,
     }
 
+    // create a new user entry in the database
     submit = async (e) => {
         e.preventDefault();
         const { context } = this.props;
@@ -24,11 +27,15 @@ export default class UserSignUp extends Component {
 
         if (password === confirmPassword) {
             const newUser = {firstName, lastName, emailAddress, password};
+            this.setState(prevState => ({isProcessing: true}));
             context.userData.createUser(newUser)
                 .then(errors => {
                     if (errors.length) {
                         // displays validation errors
-                        this.setState({errors});
+                        this.setState({
+                            errors,
+                            isProcessing: false
+                        });
                     } else {
                         context.actions.signIn(emailAddress, password)
                             .then(() => {
@@ -49,6 +56,7 @@ export default class UserSignUp extends Component {
         this.props.history.push('/');
     }
 
+    // update the state according to user input
     change = (e) => {
         const name = e.target.name;
         const value = e.target.value;
@@ -62,7 +70,8 @@ export default class UserSignUp extends Component {
             emailAddress, 
             password, 
             confirmPassword,
-            errors
+            errors,
+            isProcessing
         } = this.state;
 
         return (
@@ -77,7 +86,14 @@ export default class UserSignUp extends Component {
                             <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" value={emailAddress} onChange={this.change} /></div>
                             <div><input id="password" name="password" type="password" className="" placeholder="Password" value={password} onChange={this.change} /></div>
                             <div><input id="confirmPassword" name="confirmPassword" type="password" className="" placeholder="Confirm Password" value={confirmPassword} onChange={this.change} /></div>
-                            <div className="grid-100 pad-bottom"><button className="button" type="submit" >Sign Up</button><button className="button button-secondary" onClick={ this.cancel }>Cancel</button></div>
+                            {isProcessing ?
+                                <Processing />
+                                :
+                                <div className="grid-100 pad-bottom">
+                                    <button className="button" type="submit" >Sign Up</button>
+                                    <button className="button button-secondary" onClick={ this.cancel }>Cancel</button>
+                                </div>
+                            }
                         </form>
                     </div>
                     <p>&nbsp;</p>

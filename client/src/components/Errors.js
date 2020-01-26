@@ -1,5 +1,6 @@
 import React from 'react';
 
+// render a component that displays a list of validation errors
 export default props => {
     const errors = props.errors;
     return (

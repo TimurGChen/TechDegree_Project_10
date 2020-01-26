@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Errors from './Errors';
+import Processing from './Processing';
 
 export default class UpdateCourse extends Component {
 
@@ -9,9 +10,11 @@ export default class UpdateCourse extends Component {
         estimatedTime: '',
         materialsNeeded: '',
         owner: {},
-        errors: []
+        errors: [],
+        isProcessing: false,
     }
 
+    // retrieve the detail information of a course from the database
     componentDidMount = () => {
         const courseId = this.props.match.params.id;
         this.props.context.courseData.getCourse(courseId)
@@ -34,6 +37,7 @@ export default class UpdateCourse extends Component {
             });
     }
 
+    // update the course according to user input
     submit = (e) => {
         e.preventDefault();
         const {title, description, estimatedTime, materialsNeeded} = this.state;
@@ -41,14 +45,21 @@ export default class UpdateCourse extends Component {
         const authUser = context.authenticatedUser;
         const courseId = this.props.match.params.id;
         const updatedCourse = {title, userId: authUser.id, description, estimatedTime, materialsNeeded};
-        context.courseData.updateCourse(courseId, updatedCourse, authUser.emailAddress, authUser.mima)
+
+        this.setState(prevState => ({isProcessing: true}));
+        // timeout allows processing message to render
+        setTimeout(() => {
+            context.courseData.updateCourse(courseId, updatedCourse, authUser.emailAddress, authUser.mima)
             .then(data => {
                 if (data === null) {
                     this.props.history.push('/');
                 } else {
                     if (data.message) {
                         // display validation errors
-                        this.setState(prevState => ({errors: [data.message]}));
+                        this.setState(prevState => ({
+                            errors: [data.message],
+                            isProcessing: false
+                        }));
                     } else {
                         // user's id doesn't match course owner's id
                         this.props.history.push('/forbidden');
@@ -59,12 +70,14 @@ export default class UpdateCourse extends Component {
                 console.error(err);
                 this.props.history.push('/error');
             });
+        }, 100);
     }
 
     cancel = () => {
-        this.props.history.push('/');
+        this.props.history.push(`/courses/${this.props.match.params.id}`);
     }
 
+    // update the state according to user input
     change = (e) => {
         const name = e.target.name;
         const value = e.target.value;
@@ -78,7 +91,8 @@ export default class UpdateCourse extends Component {
             estimatedTime,
             materialsNeeded,
             errors,
-            owner
+            owner,
+            isProcessing
         } = this.state;
 
         return(
@@ -119,7 +133,14 @@ export default class UpdateCourse extends Component {
                                 </ul>
                             </div>
                         </div>
-                        <div className="grid-100 pad-bottom"><button className="button" type="submit">Update Course</button><button className="button button-secondary" onClick={this.cancel}>Cancel</button></div>
+                        {isProcessing ?
+                            <Processing />
+                            :
+                            <div className="grid-100 pad-bottom">
+                                <button className="button" type="submit">Update Course</button>
+                                <button className="button button-secondary" onClick={this.cancel}>Cancel</button>
+                            </div>
+                        }
                     </form>
                 </div>
             </div>

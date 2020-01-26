@@ -6,6 +6,8 @@ import {
 } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 
+
+// import components
 import Header from './components/Header';
 import Courses from './components/Courses';
 import CourseDetail from './components/CourseDetail';
@@ -18,8 +20,10 @@ import Forbidden from './components/Forbidden';
 import UnhandledError from './components/UnhandledError';
 import NotFound from './components/NotFound';
 
+// import function that wraps a Consumer HOC around the given component
 import withContext from './Context';
 
+// provide Consumer HOC around components that uses information from the Context API
 const HeaderWithContext = withContext(Header);
 const CoursesWithContext = withContext(Courses);
 const CourseDetailWithContext = withContext(CourseDetail);
@@ -47,6 +51,7 @@ function App() {
           <Route exact path='/signout' component={UserSignOutWithContext} />
           <Route path='/forbidden' component={Forbidden} />
           <Route path='/error' component={UnhandledError} />
+          <Route path='/notfound' component={NotFound} />
           <Route component={NotFound} />
         </Switch>
       </div>

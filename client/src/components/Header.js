@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+// render the Header compodent
 export default ({context}) => {
     const authUser = context.authenticatedUser;
 
