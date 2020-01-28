@@ -9,6 +9,7 @@ export default class UpdateCourse extends Component {
         description: '',
         estimatedTime: '',
         materialsNeeded: '',
+        userId: null,
         owner: {},
         errors: [],
         isProcessing: false,
@@ -17,16 +18,22 @@ export default class UpdateCourse extends Component {
     // retrieve the detail information of a course from the database
     componentDidMount = () => {
         const courseId = this.props.match.params.id;
+        const {context} = this.props;
+
         this.props.context.courseData.getCourse(courseId)
             .then(courseDetail => {
                 if (courseDetail === null) {
-                    this.props.history.push('/not-found');
+                    this.props.history.push('/notfound');
                 } else {
+                    if (courseDetail.userId !== context.authenticatedUser.id) {
+                        this.props.history.push('/forbidden');
+                    }
                     this.setState(prevState => ({
                         title: courseDetail.title,
                         description: courseDetail.description,
                         estimatedTime: courseDetail.estimatedTime || '',
                         materialsNeeded: courseDetail.materialsNeeded || '',
+                        userId: courseDetail.userId,
                         owner: courseDetail.owner
                     }));
                 }
